@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name:       Merchant Review Connect for WooCommerce
- * Description:       Connects WooCommerce order confirmations to Google Customer Reviews and the Google store widget.
- * Version:           1.0.0
- * Plugin URI:         https://tfaworld.org/
+ * Description:       A privacy-conscious WooCommerce bridge for Google Customer Reviews and the Google store widget.
+ * Version:           1.1.0
+ * Plugin URI:        https://tfaworld.org/
  * Author:            Vinay Shankar
- * Author URI:         https://tfaworld.org/
+ * Author URI:        https://tfaworld.org/
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       merchant-review-connect-for-woocommerce
@@ -14,31 +14,35 @@
  * Requires Plugins:  woocommerce
  * WC requires at least: 7.0
  * WC tested up to:   11.1
+ *
+ * Copyright (C) 2026 Vinay Shankar. https://tfaworld.org/
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'MRCWC_VERSION', '1.0.0' );
-define( 'MRCWC_FILE', __FILE__ );
-define( 'MRCWC_DIR', plugin_dir_path( __FILE__ ) );
-define( 'MRCWC_URL', plugin_dir_url( __FILE__ ) );
+define( 'MRC_VERSION', '1.1.0' );
+define( 'MRC_PLUGIN_FILE', __FILE__ );
+define( 'MRC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'MRC_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-add_action(
-	'before_woocommerce_init',
-	static function () {
-		if ( class_exists( '\\Automattic\\WooCommerce\\Utilities\\FeaturesUtil' ) ) {
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', MRCWC_FILE, true );
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'cart_checkout_blocks', MRCWC_FILE, true );
-		}
-	}
+$merchant_review_connect_files = array(
+	'src/Config/Configuration.php',
+	'src/Config/OptionRepository.php',
+	'src/Checkout/ConfirmationOrder.php',
+	'src/Delivery/Estimator.php',
+	'src/Catalog/GtinCollection.php',
+	'src/Integration/CustomerReviewOptIn.php',
+	'src/Integration/StoreWidget.php',
+	'src/Admin/ReviewSettingsTab.php',
+	'src/Platform/Compatibility.php',
+	'src/Application.php',
 );
 
-require_once MRCWC_DIR . 'includes/class-settings.php';
-require_once MRCWC_DIR . 'includes/class-delivery-date.php';
-require_once MRCWC_DIR . 'includes/class-gtin-resolver.php';
-require_once MRCWC_DIR . 'includes/class-order-context.php';
-require_once MRCWC_DIR . 'includes/class-survey.php';
-require_once MRCWC_DIR . 'includes/class-store-widget.php';
-require_once MRCWC_DIR . 'includes/class-plugin.php';
+foreach ( $merchant_review_connect_files as $merchant_review_connect_file ) {
+	require_once MRC_PLUGIN_DIR . $merchant_review_connect_file;
+}
 
-MRCWC\Plugin::instance()->boot();
+$merchant_review_connect = new \VinayShankar\MerchantReviewConnect\Application(
+	new \VinayShankar\MerchantReviewConnect\Config\OptionRepository()
+);
+$merchant_review_connect->register();

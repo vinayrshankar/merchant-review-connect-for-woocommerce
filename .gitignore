@@ -1,21 +1,6 @@
-# Operating systems
 .DS_Store
 Thumbs.db
-
-# Editors / IDEs
+*.log
+*.zip
 .idea/
 .vscode/
-*.swp
-*.swo
-
-# Local tooling
-.phpunit.result.cache
-.phpunit.cache/
-coverage/
-
-# Build artifacts
-*.zip
-
-# Dependencies (not required by this plugin)
-vendor/
-node_modules/
